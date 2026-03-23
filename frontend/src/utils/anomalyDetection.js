@@ -1,4 +1,4 @@
-import { calculateRevenueTrendOverTime, calculateTotalOrders, calculateTotalRevenue } from './dataAnalysis';
+import { calculateRevenueTrendOverTime } from './dataAnalysis';
 
 export const detectAnomalies = (orders, threshold = 0.5) => {
   const dailyTrend = calculateRevenueTrendOverTime(orders, 'day');

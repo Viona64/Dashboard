@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import Dashboard from './components/Dashboard';
+import React from 'react';
+import CleanOptimizedApp from './components/CleanOptimizedApp';
+import './styles/skeleton.css';
 
 function App() {
-  return (
-    <div className="App">
-      <Dashboard />
-    </div>
-  );
+  return <CleanOptimizedApp />;
 }
 
 export default App;

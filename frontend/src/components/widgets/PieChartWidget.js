@@ -1,35 +1,25 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { useOrderData } from '../../hooks/useOrderData';
-import { groupDataByStatus, groupDataByProduct } from '../../utils/dataProcessing';
-import { getInsightForWidget } from '../../utils/insightGenerator';
-import Insights from '../common/Insights';
+import { useOrderDataContext } from '../../contexts/OrderDataContext';
 
 const COLORS = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#17a2b8'];
 
 const PieChartWidget = ({ widget }) => {
-  const { orders, loading, error } = useOrderData();
+  const { aggregations, loading, error } = useOrderDataContext();
 
   const getChartData = () => {
     const config = widget.config || {};
     const dataType = config.dataType || 'status';
     
-    switch (dataType) {
-      case 'status':
-        return groupDataByStatus(orders).map(item => ({
-          name: item.status,
-          value: item.count,
-          revenue: item.revenue,
-        }));
-      case 'product':
-        return groupDataByProduct(orders).slice(0, 6).map(item => ({
-          name: item.product,
-          value: item.count,
-          revenue: item.revenue,
-        }));
-      default:
-        return [];
+    if (dataType === 'status') {
+      return Object.entries(aggregations.ordersByStatus || {})
+        .map(([name, value]) => ({ name, value }));
+    } else if (dataType === 'product') {
+      return Object.entries(aggregations.revenueByProduct || {})
+        .slice(0, 8) // Limit to top 8 for performance
+        .map(([name, value]) => ({ name, value }));
     }
+    return [];
   };
 
   if (loading) {
@@ -57,7 +47,6 @@ const PieChartWidget = ({ widget }) => {
   const data = getChartData();
   const config = widget.config || {};
   const showLegend = config.showLegend !== false;
-  const insights = getInsightForWidget(orders, 'pie');
 
   return (
     <div>
@@ -82,7 +71,6 @@ const PieChartWidget = ({ widget }) => {
           {showLegend && <Legend />}
         </PieChart>
       </ResponsiveContainer>
-      <Insights insights={insights} maxItems={2} />
     </div>
   );
 };

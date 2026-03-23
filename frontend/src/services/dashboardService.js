@@ -22,17 +22,31 @@ export const saveDashboardConfig = async (dashboardData) => {
 export const loadDashboardConfig = async (dashboardId) => {
   try {
     const response = await dashboardAPI.getDashboards();
-    const dashboards = response.data.results || response.data || [];
+    
+    // Handle different response structures safely
+    let dashboards = [];
+    if (response && typeof response === 'object') {
+      if (response.data) {
+        if (response.data.results && Array.isArray(response.data.results)) {
+          dashboards = response.data.results;
+        } else if (Array.isArray(response.data)) {
+          dashboards = response.data;
+        }
+      }
+    } else if (Array.isArray(response)) {
+      dashboards = response;
+    }
     
     if (dashboardId) {
-      const dashboard = dashboards.find(d => d.id === dashboardId);
-      return dashboard;
+      const dashboard = dashboards.find(d => d && d.id === dashboardId);
+      return dashboard || null;
     }
     
     return dashboards[0] || null;
   } catch (error) {
     console.error('Error loading dashboard config:', error);
-    throw error;
+    // Return null on error to prevent infinite loops
+    return null;
   }
 };
 

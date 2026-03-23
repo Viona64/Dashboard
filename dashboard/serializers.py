@@ -19,18 +19,7 @@ class DashboardConfigSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['owner']
 
-class DashboardLayoutSerializer(serializers.Serializer):
-    layout_config = serializers.JSONField()
-    
-    def update(self, instance, validated_data):
-        instance.layout_config = validated_data.get('layout_config', instance.layout_config)
-        instance.save()
-        return instance
-
 class DashboardCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DashboardConfig
         fields = ['name', 'layout_config']
-    
-    def create(self, validated_data):
-        return super().create(validated_data)  # Remove owner assignment

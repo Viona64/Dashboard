@@ -46,13 +46,6 @@ export const dashboardAPI = {
     const response = await api.delete(`/api/dashboard/${id}/`);
     return response.data;
   },
-  
-  getWidgetData: async (dashboardId, widgetConfig, params = {}) => {
-    const response = await api.get(`/api/dashboard/${dashboardId}/widget_data/`, {
-      params: { widget_config: JSON.stringify(widgetConfig), ...params }
-    });
-    return response.data;
-  },
 };
 
 export default api;

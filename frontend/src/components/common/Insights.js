@@ -29,18 +29,18 @@ const Insights = ({ insights, maxItems = 3 }) => {
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'high':
-        return '#dc3545';
-      case 'medium':
-        return '#ffc107';
-      case 'low':
-        return '#28a745';
-      default:
-        return '#6c757d';
-    }
-  };
+  // const getPriorityColor = (priority) => {
+  //   switch (priority) {
+  //     case 'high':
+  //       return '#dc3545';
+  //     case 'medium':
+  //       return '#ffc107';
+  //     case 'low':
+  //       return '#28a745';
+  //     default:
+  //       return '#6c757d';
+  //   }
+  // };
 
   const getPriorityBorder = (priority) => {
     switch (priority) {

@@ -1,0 +1,69 @@
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* Performance optimizations */
+.dashboard-container {
+  contain: layout style paint;
+}
+
+.widget-container {
+  contain: layout style paint;
+  will-change: transform;
+}
+
+.chart-widget,
+.table-widget,
+.kpi-widget {
+  contain: layout style paint;
+}
+
+/* Smooth transitions */
+.widget-container {
+  transition: all 0.2s ease-out;
+}
+
+/* Optimize scrolling */
+.dashboard-canvas {
+  scroll-behavior: smooth;
+  overflow-anchor: none;
+}
+
+/* Reduce paint operations */
+.table-widget table {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.chart-widget svg {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}

@@ -1,33 +1,33 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useOrderData } from '../../hooks/useOrderData';
-import { groupDataByProduct, getMonthlyRevenue } from '../../utils/dataProcessing';
+import { useOrderDataContext } from '../../contexts/OrderDataContext';
 import { getInsightForWidget } from '../../utils/insightGenerator';
 import Insights from '../common/Insights';
 
 const BarChartWidget = ({ widget }) => {
-  const { orders, loading, error } = useOrderData();
+  const { aggregations, loading, error } = useOrderDataContext();
 
   const getChartData = () => {
     const config = widget.config || {};
     const dataType = config.dataType || 'product';
     
-    switch (dataType) {
-      case 'product':
-        return groupDataByProduct(orders).map(item => ({
-          name: item.product,
-          revenue: item.revenue,
-          count: item.count,
+    if (dataType === 'product') {
+      return Object.entries(aggregations.revenueByProduct || {})
+        .slice(0, 10) // Limit to top 10 for performance
+        .map(([name, value]) => ({
+          name,
+          revenue: value,
         }));
-      case 'monthly':
-        return getMonthlyRevenue(orders).map(item => ({
-          name: item.month,
-          revenue: item.revenue,
-          count: item.count,
+    } else if (dataType === 'monthly') {
+      return Object.entries(aggregations.monthlyRevenue || {})
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-12) // Last 12 months
+        .map(([month, value]) => ({
+          name: month,
+          revenue: value,
         }));
-      default:
-        return [];
     }
+    return [];
   };
 
   if (loading) {
@@ -55,7 +55,7 @@ const BarChartWidget = ({ widget }) => {
   const data = getChartData();
   const config = widget.config || {};
   const dataKey = config.dataKey || 'revenue';
-  const insights = getInsightForWidget(orders, 'bar');
+  const insights = getInsightForWidget([], 'bar');
 
   return (
     <div>

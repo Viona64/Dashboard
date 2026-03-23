@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { saveDashboardConfig, loadDashboardConfig, updateDashboardConfig } from '../services/dashboardService';
 
-export const useDashboardPersistence = (dashboardId = null) => {
+export const useOptimizedDashboardPersistence = (dashboardId = null) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentDashboardId, setCurrentDashboardId] = useState(dashboardId);
 
-  const saveDashboard = async (dashboardData) => {
+  const saveDashboard = useCallback(async (dashboardData) => {
     try {
       setIsSaving(true);
       setError(null);
@@ -27,9 +27,9 @@ export const useDashboardPersistence = (dashboardId = null) => {
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [currentDashboardId]);
 
-  const loadDashboard = async (dashboardIdToLoad = currentDashboardId) => {
+  const loadDashboard = useCallback(async (dashboardIdToLoad = currentDashboardId) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -48,9 +48,9 @@ export const useDashboardPersistence = (dashboardId = null) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentDashboardId]);
 
-  const createNewDashboard = async (dashboardData) => {
+  const createNewDashboard = useCallback(async (dashboardData) => {
     try {
       setIsSaving(true);
       setError(null);
@@ -65,7 +65,7 @@ export const useDashboardPersistence = (dashboardId = null) => {
     } finally {
       setIsSaving(false);
     }
-  };
+  }, []);
 
   return {
     saveDashboard,

@@ -1,27 +1,26 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useOrderData } from '../../hooks/useOrderData';
-import { getMonthlyRevenue } from '../../utils/dataProcessing';
+import { useOrderDataContext } from '../../contexts/OrderDataContext';
 import { getInsightForWidget } from '../../utils/insightGenerator';
 import Insights from '../common/Insights';
 
 const LineChartWidget = ({ widget }) => {
-  const { orders, loading, error } = useOrderData();
+  const { aggregations, loading, error } = useOrderDataContext();
 
   const getChartData = () => {
     const config = widget.config || {};
     const dataType = config.dataType || 'monthly';
     
-    switch (dataType) {
-      case 'monthly':
-        return getMonthlyRevenue(orders).map(item => ({
-          name: item.month,
-          revenue: item.revenue,
-          count: item.count,
+    if (dataType === 'monthly') {
+      return Object.entries(aggregations.monthlyRevenue || {})
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-12) // Last 12 months for performance
+        .map(([month, revenue]) => ({
+          month: month.substring(5), // Show only month
+          revenue,
         }));
-      default:
-        return [];
     }
+    return [];
   };
 
   if (loading) {
@@ -49,7 +48,7 @@ const LineChartWidget = ({ widget }) => {
   const data = getChartData();
   const config = widget.config || {};
   const dataKey = config.dataKey || 'revenue';
-  const insights = getInsightForWidget(orders, 'line');
+  const insights = getInsightForWidget([], 'line');
 
   return (
     <div>

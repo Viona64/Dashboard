@@ -1,15 +1,14 @@
 import React from 'react';
-import KPIWidget from './widgets/KPIWidget';
+import { MemoizedKPIWidget, MemoizedTableWidget } from './widgets/MemoizedWidgets';
 import BarChartWidget from './widgets/BarChartWidget';
 import LineChartWidget from './widgets/LineChartWidget';
 import PieChartWidget from './widgets/PieChartWidget';
-import TableWidget from './widgets/TableWidget';
 
 const WidgetFactory = ({ widget }) => {
   const renderWidget = () => {
     switch (widget.type) {
       case 'kpi':
-        return <KPIWidget widget={widget} />;
+        return <MemoizedKPIWidget widget={widget} />;
       case 'bar':
         return <BarChartWidget widget={widget} />;
       case 'line':
@@ -17,7 +16,7 @@ const WidgetFactory = ({ widget }) => {
       case 'pie':
         return <PieChartWidget widget={widget} />;
       case 'table':
-        return <TableWidget widget={widget} />;
+        return <MemoizedTableWidget widget={widget} />;
       default:
         return <div>Unknown widget type</div>;
     }

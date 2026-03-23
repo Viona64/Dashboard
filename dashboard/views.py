@@ -10,10 +10,9 @@ from .serializers import (
     CustomerSerializer, 
     CustomerOrderSerializer, 
     DashboardConfigSerializer,
-    DashboardLayoutSerializer,
     DashboardCreateSerializer
 )
-from .utils import calculate_total_amount, calculate_order_stats, get_monthly_trends, process_widget_data
+from .utils import calculate_total_amount, calculate_order_stats, get_monthly_trends
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
